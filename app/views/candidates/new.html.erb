@@ -1,0 +1,31 @@
+<h1>Add Candidate</h1>
+
+<!-- <form action="/candidates" method="post">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+    <input type="text" name="name">
+    <input type="submit" value="go!">
+</form> -->
+<%= form_for(Candidate.new) do |form| %>
+
+<div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+</div>
+
+<div>
+    <%= form.label :party %>
+    <%= form.text_field :party %>
+</div>
+
+<div>
+    <%= form.label :age %>
+    <%= form.text_field :age %>
+</div>
+
+<div>
+    <%= form.label :politics %>
+    <%= form.text_area :politics %>
+</div>
+<%= form.submit %>
+
+<% end %>
