@@ -1,10 +1,11 @@
 class CandidatesController < ApplicationController
+  before_action :find_candidate, only: [:show, :edit, :update, :destroy, :vote]
+  
   def index
     @candidates = Candidate.all
   end
 
   def show
-    @candidate = Candidate.find_by(id: params[:id])
   end
 
   def new
@@ -15,8 +16,8 @@ class CandidatesController < ApplicationController
     @candidate = Candidate.new(candidate_params)
     
     if @candidate.save
-      flash[:notice] = "Candidate created"
-      redirect_to '/candidates'
+    #   flash[:notice] = "Candidate created"
+      redirect_to '/candidates', notice: 'Candidate created'
     else
     # 借new這個頁面再渲染一次  
       render :new 
@@ -24,34 +25,35 @@ class CandidatesController < ApplicationController
   end
 
   def edit
-    @candidate = Candidate.find_by(id: params[:id])
   end
 
   def update
-    @candidate = Candidate.find_by(id: params[:id])
-
     if @candidate.update(candidate_params)
         flash[:notice] = "Candidate updated"
         redirect_to '/candidates'
-      else
+    else
         render :edit 
-      end
+    end
   end
 
-  def destroy
-    @candidate = Candidate.find_by(id: params[:id])
-
+  def destroy    
+    VoteLog.where(candidate_id: params[:id]).destroy_all
     @candidate.destroy
+
     flash[:notice] = "Candidate deleted"
     redirect_to '/candidates'    
   end
 
   def vote
-    @candidate = Candidate.find_by(id: params[:id])
+    find_candidate
     # @candidate.votes += 1
-    @candidate.increment(:votes)
-    @candidate.save
-    flash[:notice] = "Candidate updated"
+
+    # VoteLog.create(candidate: @candidate, ip_address: request.remote_ip)
+    @candidate.vote_logs.create(ip_address: request.remote_ip)
+
+    # @candidate.increment(:votes)
+    # @candidate.save
+    flash[:notice] = "Voted"
     redirect_to '/candidates'
   end
 
@@ -59,4 +61,8 @@ class CandidatesController < ApplicationController
   def candidate_params
     params.require(:candidate).permit(:name, :party, :age, :politics)   
   end  
+
+  def find_candidate
+    @candidate = Candidate.find_by(id: params[:id])
+  end
 end

@@ -1,6 +1,5 @@
-<%= flash[:notice]  %>
 
-<h1>hiii</h1>
+<h1>VoteMe</h1>
 
 <%= link_to 'Add Candidate', new_candidate_path %>
 
@@ -12,7 +11,6 @@
             <th>Name</th>
             <th>Party</th>
             <th>Age</th>
-            <th>Politics</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -20,7 +18,7 @@
         <% @candidates.each do |candidate| %>
         <tr>
             <td><%= link_to 'vote', vote_candidate_path(candidate.id), method: 'post' %></td>
-            <td><%= candidate.votes %></td>
+            <td><%= candidate.vote_logs.size %></td>
             <td><%= link_to candidate.name, candidate_path(candidate.id) %></a></td>
             <td><%= candidate.party %></td>
             <td><%= candidate.age %></td>
